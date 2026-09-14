@@ -1,22 +1,26 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: StayTrack Property Operations API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
-    description: Health operations
+  - name: locations
+  - name: bookings
+  - name: income
+  - name: expenses
+  - name: maintenance
+  - name: budgets
+  - name: analytics
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,13 +28,723 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /locations:
+    get:
+      operationId: listLocations
+      tags: [locations]
+      summary: List staycation locations
+      responses:
+        "200":
+          description: Locations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Location"
+    post:
+      operationId: createLocation
+      tags: [locations]
+      summary: Add a staycation location
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LocationInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Location"
+  /locations/{id}:
+    patch:
+      operationId: updateLocation
+      tags: [locations]
+      summary: Update a location
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LocationUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Location"
+    delete:
+      operationId: deleteLocation
+      tags: [locations]
+      summary: Delete a location
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Deleted
+  /bookings:
+    get:
+      operationId: listBookings
+      tags: [bookings]
+      summary: List bookings
+      parameters:
+        - $ref: "#/components/parameters/StartDate"
+        - $ref: "#/components/parameters/EndDate"
+        - $ref: "#/components/parameters/LocationIdQuery"
+      responses:
+        "200":
+          description: Bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Booking"
+    post:
+      operationId: createBooking
+      tags: [bookings]
+      summary: Record a booking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookingInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+  /bookings/{id}:
+    patch:
+      operationId: updateBooking
+      tags: [bookings]
+      summary: Update a booking
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookingUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+    delete:
+      operationId: deleteBooking
+      tags: [bookings]
+      summary: Delete a booking
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Deleted
+  /income:
+    get:
+      operationId: listIncome
+      tags: [income]
+      summary: List income records
+      parameters:
+        - $ref: "#/components/parameters/StartDate"
+        - $ref: "#/components/parameters/EndDate"
+        - $ref: "#/components/parameters/LocationIdQuery"
+      responses:
+        "200":
+          description: Income records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Income"
+    post:
+      operationId: createIncome
+      tags: [income]
+      summary: Record income
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IncomeInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Income"
+  /income/{id}:
+    patch:
+      operationId: updateIncome
+      tags: [income]
+      summary: Update income
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IncomeUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Income"
+    delete:
+      operationId: deleteIncome
+      tags: [income]
+      summary: Delete income
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Deleted
+  /expenses:
+    get:
+      operationId: listExpenses
+      tags: [expenses]
+      summary: List expenses
+      parameters:
+        - $ref: "#/components/parameters/StartDate"
+        - $ref: "#/components/parameters/EndDate"
+        - $ref: "#/components/parameters/LocationIdQuery"
+      responses:
+        "200":
+          description: Expense records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Expense"
+    post:
+      operationId: createExpense
+      tags: [expenses]
+      summary: Record expense
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExpenseInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Expense"
+  /expenses/{id}:
+    patch:
+      operationId: updateExpense
+      tags: [expenses]
+      summary: Update expense
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExpenseUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Expense"
+    delete:
+      operationId: deleteExpense
+      tags: [expenses]
+      summary: Delete expense
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Deleted
+  /maintenance:
+    get:
+      operationId: listMaintenance
+      tags: [maintenance]
+      summary: List maintenance records
+      parameters:
+        - $ref: "#/components/parameters/LocationIdQuery"
+      responses:
+        "200":
+          description: Maintenance records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Maintenance"
+    post:
+      operationId: createMaintenance
+      tags: [maintenance]
+      summary: Schedule maintenance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MaintenanceInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Maintenance"
+  /maintenance/{id}:
+    patch:
+      operationId: updateMaintenance
+      tags: [maintenance]
+      summary: Update maintenance
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MaintenanceUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Maintenance"
+    delete:
+      operationId: deleteMaintenance
+      tags: [maintenance]
+      summary: Delete maintenance
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Deleted
+  /budgets:
+    get:
+      operationId: listBudgets
+      tags: [budgets]
+      summary: List budget targets
+      parameters:
+        - $ref: "#/components/parameters/LocationIdQuery"
+        - name: year
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Budget targets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Budget"
+    post:
+      operationId: createBudget
+      tags: [budgets]
+      summary: Add a budget target
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BudgetInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Budget"
+  /budgets/{id}:
+    patch:
+      operationId: updateBudget
+      tags: [budgets]
+      summary: Update a budget target
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BudgetUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Budget"
+    delete:
+      operationId: deleteBudget
+      tags: [budgets]
+      summary: Delete a budget target
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Deleted
+  /analytics:
+    get:
+      operationId: getAnalytics
+      tags: [analytics]
+      summary: Calculate filtered dashboard analytics
+      parameters:
+        - $ref: "#/components/parameters/StartDate"
+        - $ref: "#/components/parameters/EndDate"
+        - $ref: "#/components/parameters/LocationIdQuery"
+      responses:
+        "200":
+          description: Live analytics calculated from stored records
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Analytics"
+  /activity:
+    get:
+      operationId: listActivity
+      tags: [analytics]
+      summary: Recent activity timeline
+      responses:
+        "200":
+          description: Recent activity
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Activity"
 components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    StartDate:
+      name: startDate
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date
+    EndDate:
+      name: endDate
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date
+    LocationIdQuery:
+      name: locationId
+      in: query
+      required: false
+      schema:
+        type: integer
   schemas:
     HealthStatus:
       type: object
+      required: [status]
       properties:
         status:
           type: string
-      required:
-        - status
-
+    Location:
+      type: object
+      required: [id, name, city, totalUnits, nightlyRate, status]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        city: { type: string }
+        address: { type: ["string", "null"] }
+        description: { type: ["string", "null"] }
+        totalUnits: { type: integer }
+        nightlyRate: { type: number }
+        status: { type: string, enum: [active, inactive] }
+        createdAt: { type: string, format: date-time }
+    LocationInput:
+      type: object
+      required: [name, city, totalUnits, nightlyRate]
+      properties:
+        name: { type: string, minLength: 1 }
+        city: { type: string, minLength: 1 }
+        address: { type: string }
+        description: { type: string }
+        totalUnits: { type: integer, minimum: 1 }
+        nightlyRate: { type: number, minimum: 0 }
+        status: { type: string, enum: [active, inactive] }
+    LocationUpdate:
+      type: object
+      properties:
+        name: { type: string, minLength: 1 }
+        city: { type: string, minLength: 1 }
+        address: { type: string }
+        description: { type: string }
+        totalUnits: { type: integer, minimum: 1 }
+        nightlyRate: { type: number, minimum: 0 }
+        status: { type: string, enum: [active, inactive] }
+    Booking:
+      type: object
+      required: [id, locationId, locationName, guestName, checkIn, checkOut, guests, amount, status]
+      properties:
+        id: { type: integer }
+        locationId: { type: integer }
+        locationName: { type: string }
+        guestName: { type: string }
+        checkIn: { type: string, format: date }
+        checkOut: { type: string, format: date }
+        guests: { type: integer }
+        amount: { type: number }
+        status: { type: string, enum: [confirmed, pending, checked-in, checked-out, cancelled] }
+        notes: { type: ["string", "null"] }
+        createdAt: { type: string, format: date-time }
+    BookingInput:
+      type: object
+      required: [locationId, guestName, checkIn, checkOut, guests, amount]
+      properties:
+        locationId: { type: integer }
+        guestName: { type: string, minLength: 1 }
+        checkIn: { type: string, format: date }
+        checkOut: { type: string, format: date }
+        guests: { type: integer, minimum: 1 }
+        amount: { type: number, minimum: 0 }
+        status: { type: string, enum: [confirmed, pending, checked-in, checked-out, cancelled] }
+        notes: { type: string }
+    BookingUpdate:
+      type: object
+      properties:
+        locationId: { type: integer }
+        guestName: { type: string, minLength: 1 }
+        checkIn: { type: string, format: date }
+        checkOut: { type: string, format: date }
+        guests: { type: integer, minimum: 1 }
+        amount: { type: number, minimum: 0 }
+        status: { type: string, enum: [confirmed, pending, checked-in, checked-out, cancelled] }
+        notes: { type: string }
+    Income:
+      type: object
+      required: [id, locationId, locationName, source, amount, receivedOn, category]
+      properties:
+        id: { type: integer }
+        locationId: { type: integer }
+        locationName: { type: string }
+        bookingId: { type: ["integer", "null"] }
+        source: { type: string }
+        amount: { type: number }
+        receivedOn: { type: string, format: date }
+        category: { type: string }
+        note: { type: ["string", "null"] }
+        createdAt: { type: string, format: date-time }
+    IncomeInput:
+      type: object
+      required: [locationId, source, amount, receivedOn, category]
+      properties:
+        locationId: { type: integer }
+        bookingId: { type: integer }
+        source: { type: string, minLength: 1 }
+        amount: { type: number, minimum: 0 }
+        receivedOn: { type: string, format: date }
+        category: { type: string, minLength: 1 }
+        note: { type: string }
+    IncomeUpdate:
+      type: object
+      properties:
+        locationId: { type: integer }
+        bookingId: { type: integer }
+        source: { type: string, minLength: 1 }
+        amount: { type: number, minimum: 0 }
+        receivedOn: { type: string, format: date }
+        category: { type: string, minLength: 1 }
+        note: { type: string }
+    Expense:
+      type: object
+      required: [id, locationId, locationName, category, amount, expenseDate, status]
+      properties:
+        id: { type: integer }
+        locationId: { type: integer }
+        locationName: { type: string }
+        category: { type: string }
+        amount: { type: number }
+        expenseDate: { type: string, format: date }
+        status: { type: string, enum: [paid, planned, overdue] }
+        description: { type: ["string", "null"] }
+        createdAt: { type: string, format: date-time }
+    ExpenseInput:
+      type: object
+      required: [locationId, category, amount, expenseDate]
+      properties:
+        locationId: { type: integer }
+        category: { type: string, minLength: 1 }
+        amount: { type: number, minimum: 0 }
+        expenseDate: { type: string, format: date }
+        status: { type: string, enum: [paid, planned, overdue] }
+        description: { type: string }
+    ExpenseUpdate:
+      type: object
+      properties:
+        locationId: { type: integer }
+        category: { type: string, minLength: 1 }
+        amount: { type: number, minimum: 0 }
+        expenseDate: { type: string, format: date }
+        status: { type: string, enum: [paid, planned, overdue] }
+        description: { type: string }
+    Maintenance:
+      type: object
+      required: [id, locationId, locationName, title, scheduledDate, priority, status, cost]
+      properties:
+        id: { type: integer }
+        locationId: { type: integer }
+        locationName: { type: string }
+        title: { type: string }
+        scheduledDate: { type: string, format: date }
+        priority: { type: string, enum: [low, medium, high, urgent] }
+        status: { type: string, enum: [scheduled, in-progress, completed, cancelled] }
+        cost: { type: number }
+        notes: { type: ["string", "null"] }
+    MaintenanceInput:
+      type: object
+      required: [locationId, title, scheduledDate, priority]
+      properties:
+        locationId: { type: integer }
+        title: { type: string, minLength: 1 }
+        scheduledDate: { type: string, format: date }
+        priority: { type: string, enum: [low, medium, high, urgent] }
+        status: { type: string, enum: [scheduled, in-progress, completed, cancelled] }
+        cost: { type: number, minimum: 0 }
+        notes: { type: string }
+    MaintenanceUpdate:
+      type: object
+      properties:
+        locationId: { type: integer }
+        title: { type: string, minLength: 1 }
+        scheduledDate: { type: string, format: date }
+        priority: { type: string, enum: [low, medium, high, urgent] }
+        status: { type: string, enum: [scheduled, in-progress, completed, cancelled] }
+        cost: { type: number, minimum: 0 }
+        notes: { type: string }
+    Budget:
+      type: object
+      required: [id, locationId, locationName, month, year, category, amount]
+      properties:
+        id: { type: integer }
+        locationId: { type: integer }
+        locationName: { type: string }
+        month: { type: integer, minimum: 1, maximum: 12 }
+        year: { type: integer, minimum: 2000 }
+        category: { type: string }
+        amount: { type: number }
+        note: { type: ["string", "null"] }
+    BudgetInput:
+      type: object
+      required: [locationId, month, year, category, amount]
+      properties:
+        locationId: { type: integer }
+        month: { type: integer, minimum: 1, maximum: 12 }
+        year: { type: integer, minimum: 2000 }
+        category: { type: string, minLength: 1 }
+        amount: { type: number, minimum: 0 }
+        note: { type: string }
+    BudgetUpdate:
+      type: object
+      properties:
+        locationId: { type: integer }
+        month: { type: integer, minimum: 1, maximum: 12 }
+        year: { type: integer, minimum: 2000 }
+        category: { type: string, minLength: 1 }
+        amount: { type: number, minimum: 0 }
+        note: { type: string }
+    Analytics:
+      type: object
+      required: [totalRevenue, totalExpenses, netProfit, occupancyRate, activeBookings, totalUnits, monthly, locationBreakdown, expenseBreakdown, projections]
+      properties:
+        totalRevenue: { type: number }
+        totalExpenses: { type: number }
+        netProfit: { type: number }
+        occupancyRate: { type: number }
+        activeBookings: { type: integer }
+        totalUnits: { type: integer }
+        monthly:
+          type: array
+          items:
+            $ref: "#/components/schemas/MonthlyMetric"
+        locationBreakdown:
+          type: array
+          items:
+            $ref: "#/components/schemas/LocationMetric"
+        expenseBreakdown:
+          type: array
+          items:
+            $ref: "#/components/schemas/CategoryMetric"
+        projections:
+          type: array
+          items:
+            $ref: "#/components/schemas/Projection"
+    MonthlyMetric:
+      type: object
+      required: [month, revenue, expenses, profit, bookings, occupancyRate]
+      properties:
+        month: { type: string }
+        revenue: { type: number }
+        expenses: { type: number }
+        profit: { type: number }
+        bookings: { type: integer }
+        occupancyRate: { type: number }
+    LocationMetric:
+      type: object
+      required: [locationId, locationName, revenue, expenses, profit, bookings, occupancyRate]
+      properties:
+        locationId: { type: integer }
+        locationName: { type: string }
+        revenue: { type: number }
+        expenses: { type: number }
+        profit: { type: number }
+        bookings: { type: integer }
+        occupancyRate: { type: number }
+    CategoryMetric:
+      type: object
+      required: [category, amount]
+      properties:
+        category: { type: string }
+        amount: { type: number }
+    Projection:
+      type: object
+      required: [month, conservative, expected, optimistic]
+      properties:
+        month: { type: string }
+        conservative: { type: number }
+        expected: { type: number }
+        optimistic: { type: number }
+    Activity:
+      type: object
+      required: [id, type, title, detail, occurredAt]
+      properties:
+        id: { type: integer }
+        type: { type: string, enum: [booking, income, expense, maintenance, location] }
+        title: { type: string }
+        detail: { type: string }
+        occurredAt: { type: string, format: date-time }

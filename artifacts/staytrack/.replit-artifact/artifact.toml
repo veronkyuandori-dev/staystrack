@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "StayTrack Property Operations"
+description = "A cloud-based property operations system for managing staycation locations, bookings, income, expenses, maintenance, cash flow, budgets, projections, profitability, and live analytics from real database records."
+version = "1.0.0"
+id = "artifacts/staytrack"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 20194
+
+[services.development]
+run = "pnpm --filter @workspace/staytrack run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/staytrack", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/staytrack/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "20194"
+BASE_PATH = "/"
