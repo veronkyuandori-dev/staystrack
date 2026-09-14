@@ -123,7 +123,7 @@ router.post("/bookings", async (req, res): Promise<void> => {
   const parsed = CreateBookingBody.safeParse(req.body);
   if (!parsed.success) { res.status(400).json({ error: parsed.error.message }); return; }
   const [row] = await db.insert(bookingsTable).values({ ...parsed.data, checkIn: dateOnly(parsed.data.checkIn), checkOut: dateOnly(parsed.data.checkOut), status: parsed.data.status ?? "confirmed" }).returning();
-  const [withLocation] = await bookingRows({ locationId: row.locationId });
+  const withLocation = (await bookingRows({})).find((item) => item.id === row.id);
   res.status(201).json(CreateBookingResponse.parse({ ...withLocation, checkIn: dateTime(row.checkIn), checkOut: dateTime(row.checkOut) }));
 });
 
